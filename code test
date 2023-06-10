@@ -1,0 +1,40 @@
+import requests
+
+def get_pull_requests(username, repo, token):
+    headers = {
+        "Authorization": f"Bearer {token}",
+        "Accept": "application/vnd.github.v3+json"
+    }
+    
+    url = f"https://api.github.com/repos/{username}/{repo}/pulls?state=all"
+    response = requests.get(url, headers=headers)
+    response.raise_for_status()
+    
+    prs = response.json()
+    
+    pr_list = []
+    
+    for pr in prs:
+        pr_data = {
+            "PR Number": pr["number"],
+            "Title": pr["title"],
+            "Opened at": pr["created_at"],
+            "Closed at": pr["closed_at"]
+        }
+        pr_list.append(pr_data)
+    
+    return pr_list
+
+# Provide your GitHub username, repository name, and personal access token
+username = "dpjoshi24"
+repo = "testtutorial"
+token = "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"
+
+pr_list = get_pull_requests(username, repo, token)
+
+# Print the PR information
+for pr in pr_list:
+    print(f"PR #{pr['PR Number']}: {pr['Title']}")
+    print(f"Opened at: {pr['Opened at']}")
+    print(f"Closed at: {pr['Closed at']}")
+    print()
